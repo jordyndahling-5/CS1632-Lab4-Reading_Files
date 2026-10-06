@@ -7,15 +7,34 @@ public class Main {
         try {
             ReadFile fileRes = new ReadFile("data/GettysburgAddress.txt");
             ArrayList<String> lines = fileRes.getLines();
-            int linenum = 1;
+
+            ArrayList<Paragraph> paragraphs = new ArrayList<>();
+            Paragraph currentParagraph = new Paragraph();
+
             for (String line: lines) {
-                System.out.println(linenum + ": " + line);
-                linenum++;
+                if (line.trim().isEmpty()) {
+                    if (!currentParagraph.getWords().isEmpty()) {
+                        paragraphs.add(currentParagraph);
+                        currentParagraph = new Paragraph();
+                    }
+                } else {
+                    String[] words = line.trim().split("\\s+");
+
+                    for (String word : words) {
+                        currentParagraph.addWord(word);
+                    }
+                }
+            }
+            if (!currentParagraph.getWords().isEmpty()) {
+                paragraphs.add(currentParagraph);
+            }
+            for (Paragraph paragraph : paragraphs) {
+                paragraph.print();
+                System.out.println();
             }
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println(e.getStackTrace());
         }
     }
 }
